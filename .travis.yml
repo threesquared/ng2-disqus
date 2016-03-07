@@ -1,0 +1,16 @@
+language: node_js
+node_js:
+- stable
+before_script:
+- export DISPLAY=:99.0
+- sh -e /etc/init.d/xvfb start
+after_script:
+- npm run coveralls
+deploy:
+  provider: npm
+  email: ben@3sq.re
+  api_key:
+    secure: ZcQ5BC/z7n+dqdlQZv/JWkwgL9yD8ICaPKiXZWZ4CshkCMQ7DosPqe07KPrvm2/uIgC3kSKouXwNG9laRlvlzs0YwOVQ0l0DWaEX+nwHHhS9qcPYywI1YvjDOb/dI6PdQroRo7w79Hdsk3OQR2clEjkJtspVCvoj0RcDJM5IliwProVtbdfJEnvh6Y9Yu+jRzu5fcljxoz9tm7MTZIBiD0GlCnCm1vxlivI+wqJnJ8wAKSCnnH2NS/UFew/NFd4FT8D5cbQPD41p78utmWta7wKvh3ZEl1XgrGrg31p94Lsk2LnqQAuyP3mvkbO6XkESydZCZjq2+l+bHQxdX3iHUQ+TaW3dIsjkD7fRT8wme+NH+yHovaGbd2Pg+I68496IAWdBXzmKNIshpYYq2sS8NZbdxzywY1SEbfn8oIaZIh4JGzb/TmsObVzbP5ad8IJfn3+cpo36YWsACKOdCN6dIF1FBs7MeugcA1NNM9QSJFZBc91Swh81k5JpLqiElplSSceg9PxDzGW4Xh5aA8D1bzSYcOq705LTwl7Cg5xyTQLkP08NKDeM1BnXQXB4G2YM8rOIpCIUecKg3l6+fq13pSORXet/GhMuDtvq2W8lL1vZHycXHS0mKFWO3Qg7iUR++5wMSrZtxghRNfBVySZ/APbvhedCE0m50KtQFrjRReY=
+  on:
+    tags: true
+    repo: threesquared/ng2-disqus

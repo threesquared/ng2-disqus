@@ -1,0 +1,59 @@
+{
+  "name": "ng2-disqus",
+  "version": "1.0.0",
+  "description": "Angular 2 component for Disqus",
+  "main": "disqus.js",
+  "scripts": {
+    "test": "npm run compile && npm run karma",
+    "postinstall": "typings install",
+    "compile": "./node_modules/.bin/tsc",
+    "karma": "./node_modules/.bin/karma start",
+    "remap": "./node_modules/.bin/remap-istanbul -i ./coverage/coverage-final.json -o ./coverage/lcov.info -t lcovonly",
+    "coveralls": "npm run remap && node ./node_modules/coveralls/bin/coveralls.js < ./coverage/lcov.info"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/threesquared/ng2-disqus.git"
+  },
+  "keywords": [
+    "angular",
+    "disqus",
+    "angular2",
+    "ng2"
+  ],
+  "author": "Ben Speakman <ben@3sq.re>",
+  "license": "MIT",
+  "typings": "./disqus.d.ts",
+  "bugs": {
+    "url": "https://github.com/threesquared/ng2-disqus/issues"
+  },
+  "homepage": "https://github.com/threesquared/ng2-disqus#readme",
+  "dependencies": {
+    "angular2": "^2.0.0-beta.7",
+    "es6-promise": "^3.0.2",
+    "es6-shim": "^0.33.3",
+    "reflect-metadata": "0.1.2",
+    "rxjs": "5.0.0-beta.2",
+    "zone.js": "0.5.15"
+  },
+  "devDependencies": {
+    "angular2": "2.0.0-beta.7",
+    "coveralls": "^2.11.8",
+    "es6-promise": "^3.0.2",
+    "es6-shim": "^0.33.3",
+    "jasmine": "^2.4.1",
+    "jasmine-core": "^2.4.1",
+    "karma": "^0.13.21",
+    "karma-coverage": "^0.5.5",
+    "karma-es6-shim": "^0.2.3",
+    "karma-firefox-launcher": "^0.1.7",
+    "karma-jasmine": "^0.3.7",
+    "reflect-metadata": "0.1.2",
+    "remap-istanbul": "^0.5.1",
+    "rxjs": "5.0.0-beta.2",
+    "systemjs": "^0.19.23",
+    "typescript": "^1.8.7",
+    "typings": "^0.7.3",
+    "zone.js": "0.5.15"
+  }
+}
