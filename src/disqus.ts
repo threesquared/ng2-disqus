@@ -1,17 +1,18 @@
 import { Component, Input } from 'angular2/core';
 import { Location } from 'angular2/router';
+import { BrowserDomAdapter } from 'angular2/platform/browser';
 
 @Component({
   selector: 'disqus',
   template: '<div id="disqus_thread"></div>',
-  properties: ['identifier', 'shortname']
+  properties: ['identifier', 'shortname'],
+  providers: [BrowserDomAdapter]
 })
 
 export class Disqus {
 
-  constructor(
-  	private _location: Location)
-  {}
+  constructor(private _location: Location, private _dom: BrowserDomAdapter) {
+  }
 
   /**
    * The unique identifier for the page
@@ -27,9 +28,9 @@ export class Disqus {
    * Component on init
    */
   ngOnInit() {
-    if((<any>window).DISQUS === undefined) {
+    if ((<any>window).DISQUS === undefined) {
       this._addScriptTag();
-    } else{
+    } else {
       this._reset();
     }
   }
@@ -51,7 +52,7 @@ export class Disqus {
     (<any>window).disqus_config = this._getConfig();
     let container = this._getScriptContainer(),
     scriptSrc = '//' + this.shortname + '.disqus.com/embed.js';
-    container.appendChild(this._buildScriptTag(scriptSrc));
+    this._dom.appendChild(container, this._buildScriptTag(scriptSrc));
   }
 
   /**
@@ -71,7 +72,7 @@ export class Disqus {
    * @return {HTMLHeadElement}
    */
   _getScriptContainer(): HTMLHeadElement {
-    return document.getElementsByTagName('head')[0];
+    return this._dom.query('head');
   }
 
   /**
@@ -80,8 +81,7 @@ export class Disqus {
    * @return {HTMLScriptElement}
    */
   _buildScriptTag(src: string): HTMLScriptElement {
-    let script = document.createElement('script');
-    script.src = src;
+    let script = this._dom.createScriptTag('src', src);
     script.async = true;
     script.type = 'text/javascript';
     script.setAttribute('data-timestamp', new Date().getTime().toString());

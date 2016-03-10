@@ -13,6 +13,7 @@ import { TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_PROVIDERS } f
 import { SpyLocation } from 'angular2/src/mock/location_mock';
 import { provide } from 'angular2/core';
 import { Location } from 'angular2/router';
+import { BrowserDomAdapter } from 'angular2/platform/browser';
 import { Disqus } from './disqus';
 
 setBaseTestProviders(TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_PROVIDERS);
@@ -20,6 +21,7 @@ setBaseTestProviders(TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_P
 beforeEachProviders(() => [
   Disqus,
   provide(Location, {useClass: SpyLocation}),
+  BrowserDomAdapter
 ]);
 
 describe('Disqus Component', () => {
@@ -34,7 +36,7 @@ describe('Disqus Component', () => {
   }));
 
   it('should have correct config variables', injectAsync([TestComponentBuilder, Location], (_testComponentBuilder: TestComponentBuilder, _location: Location) => {
-    (<any>_location).setInitialPath('http://test.com')
+    (<any>_location).setInitialPath('http://test.com');
     return _testComponentBuilder.createAsync(Disqus).then((_componentFixture: ComponentFixture) => {
       _componentFixture.componentInstance.identifier = 'identifier';
       _componentFixture.detectChanges();
@@ -70,7 +72,7 @@ describe('Disqus Component', () => {
       (<any>window).DISQUS = {
         reset: () => {}
       };
-      spyOn((<any>window).DISQUS, 'reset')
+      spyOn((<any>window).DISQUS, 'reset');
 
       _componentFixture.componentInstance.shortname = 'shortname';
       _componentFixture.componentInstance.identifier = 'identifier';
