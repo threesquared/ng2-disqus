@@ -2,6 +2,7 @@ import {
   describe,
   expect,
   it,
+  inject,
   injectAsync,
   TestComponentBuilder,
   ComponentFixture,
@@ -35,54 +36,47 @@ describe('Disqus Component', () => {
     });
   }));
 
-  it('should have correct config variables', injectAsync([TestComponentBuilder, Location], (_testComponentBuilder: TestComponentBuilder, _location: Location) => {
+  it('should have correct config variables', inject([Disqus, Location], (disqus: Disqus, _location: Location) => {
     (<any>_location).setInitialPath('http://test.com');
-    return _testComponentBuilder.createAsync(Disqus).then((_componentFixture: ComponentFixture) => {
-      _componentFixture.componentInstance.identifier = 'identifier';
-      _componentFixture.detectChanges();
-      _componentFixture.componentInstance.ngOnInit();
-      let config = _componentFixture.componentInstance._getConfig();
-      let configObj = {
-        page: {
-          identifier: <string> null,
-          url: <string> null
-        },
-        language: <string> null
-      };
-      config.call(configObj)
+    disqus.identifier = 'identifier';
+    disqus.ngOnInit();
 
-      expect(configObj.language).toBe('en');
-      expect(configObj.page.identifier).toBe('identifier');
-      expect(configObj.page.url).toBe('http://test.com');
-    });
+    let config = disqus._getConfig();
+    let configObj = {
+      page: {
+        identifier: <string> null,
+        url: <string> null
+      },
+      language: <string> null
+    };
+    config.call(configObj)
+
+    expect(configObj.language).toBe('en');
+    expect(configObj.page.identifier).toBe('identifier');
+    expect(configObj.page.url).toBe('http://test.com');
+
   }));
 
-  it('should add embed.js to the document if it is not present', injectAsync([TestComponentBuilder], (_testComponentBuilder: TestComponentBuilder) => {
-    return _testComponentBuilder.createAsync(Disqus).then((_componentFixture: ComponentFixture) => {
-      _componentFixture.componentInstance.shortname = 'shortname';
-      _componentFixture.detectChanges();
-      _componentFixture.componentInstance.ngOnInit();
+  it('should add embed.js to the document if it is not present', inject([Disqus], (disqus: Disqus) => {
+    disqus.shortname = 'shortname';
+    disqus.ngOnInit();
 
-      expect(document.querySelector('script[src="//shortname.disqus.com/embed.js"]')).not.toBe(null);
-    });
+    expect(document.querySelector('script[src="//shortname.disqus.com/embed.js"]')).not.toBe(null);
   }));
 
-  it('should call reset if script already loaded', injectAsync([TestComponentBuilder], (_testComponentBuilder: TestComponentBuilder) => {
-    return _testComponentBuilder.createAsync(Disqus).then((_componentFixture: ComponentFixture) => {
-      (<any>window).DISQUS = {
-        reset: () => {}
-      };
-      spyOn((<any>window).DISQUS, 'reset');
+  it('should call reset if script already loaded', inject([Disqus], (disqus: Disqus) => {
+    (<any>window).DISQUS = {
+      reset: () => {}
+    };
+    spyOn((<any>window).DISQUS, 'reset');
 
-      _componentFixture.componentInstance.shortname = 'shortname';
-      _componentFixture.componentInstance.identifier = 'identifier';
-      _componentFixture.detectChanges();
-      _componentFixture.componentInstance.ngOnInit();
+    disqus.shortname = 'shortname';
+    disqus.identifier = 'identifier';
+    disqus.ngOnInit();
 
-      expect((<any>window).DISQUS.reset).toHaveBeenCalledWith({
-        reload: true,
-        config: jasmine.any(Function)
-      });
+    expect((<any>window).DISQUS.reset).toHaveBeenCalledWith({
+      reload: true,
+      config: jasmine.any(Function)
     });
   }));
 
