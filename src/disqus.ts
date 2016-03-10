@@ -54,9 +54,9 @@ export class Disqus {
    */
   _addScriptTag() {
     this._window.disqus_config = this._getConfig();
-    let container = this._getScriptContainer(),
-    scriptSrc = '//' + this.shortname + '.disqus.com/embed.js';
-    this._dom.appendChild(container, this._buildScriptTag(scriptSrc));
+    let container = this._getScriptContainer();
+    let script = this._buildScriptTag(`//${this.shortname}.disqus.com/embed.js`);
+    this._dom.appendChild(container, script);
   }
 
   /**
