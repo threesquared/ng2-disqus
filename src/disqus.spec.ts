@@ -1,3 +1,4 @@
+/// <reference path="./window.ts" />
 import {
   describe,
   expect,
@@ -22,6 +23,7 @@ setBaseTestProviders(TEST_BROWSER_PLATFORM_PROVIDERS, TEST_BROWSER_APPLICATION_P
 beforeEachProviders(() => [
   Disqus,
   provide(Location, {useClass: SpyLocation}),
+  provide(Window, { useValue: window }),
   BrowserDomAdapter
 ]);
 
@@ -49,7 +51,7 @@ describe('Disqus Component', () => {
       },
       language: <string> null
     };
-    config.call(configObj)
+    config.call(configObj);
 
     expect(configObj.language).toBe('en');
     expect(configObj.page.identifier).toBe('identifier');
@@ -64,17 +66,17 @@ describe('Disqus Component', () => {
     expect(document.querySelector('script[src="//shortname.disqus.com/embed.js"]')).not.toBe(null);
   }));
 
-  it('should call reset if script already loaded', inject([Disqus], (disqus: Disqus) => {
-    (<any>window).DISQUS = {
-      reset: () => {}
+  it('should call reset if script already loaded', inject([Disqus, Window], (disqus: Disqus, window: Window) => {
+    window.DISQUS = {
+      reset: (params) => { return params; }
     };
-    spyOn((<any>window).DISQUS, 'reset');
+    spyOn(window.DISQUS, 'reset');
 
     disqus.shortname = 'shortname';
     disqus.identifier = 'identifier';
     disqus.ngOnInit();
 
-    expect((<any>window).DISQUS.reset).toHaveBeenCalledWith({
+    expect(window.DISQUS.reset).toHaveBeenCalledWith({
       reload: true,
       config: jasmine.any(Function)
     });

@@ -1,4 +1,5 @@
-import { Component, Input } from 'angular2/core';
+/// <reference path="./window.ts" />
+import { Component, Input, provide } from 'angular2/core';
 import { Location } from 'angular2/router';
 import { BrowserDomAdapter } from 'angular2/platform/browser';
 
@@ -6,13 +7,16 @@ import { BrowserDomAdapter } from 'angular2/platform/browser';
   selector: 'disqus',
   template: '<div id="disqus_thread"></div>',
   properties: ['identifier', 'shortname'],
-  providers: [BrowserDomAdapter]
+  providers: [BrowserDomAdapter, provide(Window, { useValue: window })]
 })
 
 export class Disqus {
 
-  constructor(private _location: Location, private _dom: BrowserDomAdapter) {
-  }
+  constructor(
+    private _location: Location,
+    private _dom: BrowserDomAdapter,
+    private _window: Window)
+  {}
 
   /**
    * The unique identifier for the page
@@ -28,7 +32,7 @@ export class Disqus {
    * Component on init
    */
   ngOnInit() {
-    if ((<any>window).DISQUS === undefined) {
+    if (this._window.DISQUS === undefined) {
       this._addScriptTag();
     } else {
       this._reset();
@@ -39,7 +43,7 @@ export class Disqus {
    * Reset Disqus with new information.
    */
   _reset() {
-    (<any>window).DISQUS.reset({
+    this._window.DISQUS.reset({
       reload: true,
       config: this._getConfig()
     });
@@ -49,7 +53,7 @@ export class Disqus {
    * Add the Disqus script to the document.
    */
   _addScriptTag() {
-    (<any>window).disqus_config = this._getConfig();
+    this._window.disqus_config = this._getConfig();
     let container = this._getScriptContainer(),
     scriptSrc = '//' + this.shortname + '.disqus.com/embed.js';
     this._dom.appendChild(container, this._buildScriptTag(scriptSrc));
@@ -64,7 +68,7 @@ export class Disqus {
       this.page.url = _self._location.path();
       this.page.identifier = _self.identifier;
       this.language = 'en';
-    }
+    };
   }
 
   /**
