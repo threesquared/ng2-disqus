@@ -1,6 +1,6 @@
 {
   "name": "ng2-disqus",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Angular 2 component for Disqus",
   "main": "disqus.js",
   "scripts": {
