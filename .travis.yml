@@ -6,6 +6,8 @@ before_script:
 - sh -e /etc/init.d/xvfb start
 after_script:
 - npm run coveralls
+addons:
+  firefox: latest
 deploy:
   provider: npm
   email: ben@3sq.re
