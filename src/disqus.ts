@@ -1,71 +1,77 @@
 /// <reference path="./window.ts" />
-import { Component, Input, provide } from 'angular2/core';
-import { Location } from 'angular2/router';
-import { BrowserDomAdapter } from 'angular2/platform/browser';
+import { Injectable, Component, Input, OnInit, Inject, provide } from '@angular/core';
+import { Location } from '@angular/common';
+import { DOCUMENT } from '@angular/platform-browser';
+import { getDOM } from '@angular/platform-browser/src/dom/dom_adapter';
+import { Window } from './window';
 
 @Component({
   selector: 'disqus',
   template: '<div id="disqus_thread"></div>',
   properties: ['identifier', 'shortname'],
-  providers: [BrowserDomAdapter, provide(Window, { useValue: window })]
+  providers: [provide(Window, {useValue: window})]
 })
 
-export class Disqus {
+@Injectable()
+export class Disqus implements OnInit {
 
   constructor(
-    private _location: Location,
-    private _dom: BrowserDomAdapter,
-    private _window: Window)
-  {}
+    @Inject(DOCUMENT) private document: any,
+    private window: Window,
+    private location: Location
+  ) {}
 
   /**
    * The unique identifier for the page
    */
-  @Input() public identifier: string;
+  @Input()
+  public identifier: string;
 
   /**
    * Your Disqus shortname
    */
-  @Input() public shortname: string;
+  @Input()
+  public shortname: string;
 
   /**
    * Component on init
    */
   ngOnInit() {
-    if (this._window.DISQUS === undefined) {
-      this._addScriptTag();
+    if (this.window.DISQUS === undefined) {
+      this.addScriptTag();
     } else {
-      this._reset();
+      this.reset();
     }
   }
 
   /**
    * Reset Disqus with new information.
    */
-  _reset() {
-    this._window.DISQUS.reset({
+  private reset() {
+    this.window.DISQUS.reset({
       reload: true,
-      config: this._getConfig()
+      config: this.getConfig()
     });
   }
 
   /**
    * Add the Disqus script to the document.
    */
-  _addScriptTag() {
-    this._window.disqus_config = this._getConfig();
-    let container = this._getScriptContainer();
-    let script = this._buildScriptTag(`//${this.shortname}.disqus.com/embed.js`);
-    this._dom.appendChild(container, script);
+  private addScriptTag() {
+    this.window.disqus_config = this.getConfig();
+    let container = this.getScriptContainer();
+    let script = this.buildScriptTag(`//${this.shortname}.disqus.com/embed.js`);
+    getDOM().insertBefore(container.lastChild, script);
   }
 
   /**
    * Get Disqus config
+   * @return {Function}
    */
-  _getConfig() {
+  public getConfig(): () => void {
     let _self = this;
     return function () {
-      this.page.url = _self._location.path();
+      this.page.url = _self.location.path();
       this.page.identifier = _self.identifier;
       this.language = 'en';
     };
@@ -75,20 +81,21 @@ export class Disqus {
    * Get the HEAD element
    * @return {HTMLHeadElement}
    */
-  _getScriptContainer(): HTMLHeadElement {
-    return this._dom.query('head');
+  private getScriptContainer(): HTMLHeadElement {
+    return this.document.head;
   }
 
   /**
    * Build the Disqus script element.
    * @param  {string} src
-   * @return {HTMLScriptElement}
+   * @return {HTMLElement}
    */
-  _buildScriptTag(src: string): HTMLScriptElement {
-    let script = this._dom.createScriptTag('src', src);
-    script.async = true;
-    script.type = 'text/javascript';
-    script.setAttribute('data-timestamp', new Date().getTime().toString());
+  private buildScriptTag(src: string): HTMLElement {
+    let script = getDOM().createElement('script');
+    getDOM().setAttribute(script, 'src', src);
+    getDOM().setAttribute(script, 'async', 'true');
+    getDOM().setAttribute(script, 'type', 'text/javascript');
+    getDOM().setAttribute(script, 'data-timestamp', new Date().getTime().toString());
     return script;
   }
 }

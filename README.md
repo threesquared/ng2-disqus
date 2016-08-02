@@ -22,7 +22,10 @@ If you are using SystemJS you will need to add the path to the ng2-disqus module
   System.config({
     // ...
     map: {
-      "ng2-disqus": "node_modules/ng2-disqus"
+      'ng2-disqus': 'node_modules/ng2-disqus'
+    }
+    packages: {
+      'ng2-disqus': { defaultExtension: 'js' },
     }
   });
   // ...

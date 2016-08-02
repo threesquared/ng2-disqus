@@ -1,6 +1,8 @@
-interface Window {
-  DISQUS: {
+export class Window {
+
+  public DISQUS: {
     reset: (params: {}) => {}
   };
-  disqus_config: () => void;
+  public disqus_config: () => void;
+
 }
