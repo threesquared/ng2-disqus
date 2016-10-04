@@ -1,7 +1,7 @@
 import { Injectable, Component, Input, OnInit, Inject, Provider } from '@angular/core';
 import { Location } from '@angular/common';
 import { __platform_browser_private__ as _, DOCUMENT } from '@angular/platform-browser';
-import { Window, DisqusWindow } from './window';
+import { WINDOW, MockWindow } from './window';
 
 @Component({
   selector: 'disqus',
@@ -25,13 +25,13 @@ export class Disqus implements OnInit {
 
   /**
    * Create new Disqus script
-   * @param {Document}     document
-   * @param {DisqusWindow} window
-   * @param {Location}     location
+   * @param {any}        document
+   * @param {MockWindow} window
+   * @param {Location}   location
    */
   constructor(
-    @Inject(DOCUMENT) private document: Document,
-    @Inject(Window) private window: DisqusWindow,
+    @Inject(DOCUMENT) private document: any,
+    @Inject(WINDOW) private window: MockWindow,
     private location: Location
   ) {}
 
