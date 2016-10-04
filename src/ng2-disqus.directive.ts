@@ -1,25 +1,15 @@
-/// <reference path="./window.ts" />
-import { Injectable, Component, Input, OnInit, Inject, provide } from '@angular/core';
+import { Injectable, Component, Input, OnInit, Inject, Provider } from '@angular/core';
 import { Location } from '@angular/common';
-import { DOCUMENT } from '@angular/platform-browser';
-import { getDOM } from '@angular/platform-browser/src/dom/dom_adapter';
-import { Window } from './window';
+import { __platform_browser_private__ as _, DOCUMENT } from '@angular/platform-browser';
+import { WINDOW, MockWindow } from './window';
 
 @Component({
   selector: 'disqus',
   template: '<div id="disqus_thread"></div>',
-  properties: ['identifier', 'shortname'],
-  providers: [provide(Window, {useValue: window})]
 })
 
 @Injectable()
 export class Disqus implements OnInit {
-
-  constructor(
-    @Inject(DOCUMENT) private document: any,
-    private window: Window,
-    private location: Location
-  ) {}
 
   /**
    * The unique identifier for the page
@@ -32,6 +22,18 @@ export class Disqus implements OnInit {
    */
   @Input()
   public shortname: string;
+
+  /**
+   * Create new Disqus script
+   * @param {any}        document
+   * @param {MockWindow} window
+   * @param {Location}   location
+   */
+  constructor(
+    @Inject(DOCUMENT) private document: any,
+    @Inject(WINDOW) private window: MockWindow,
+    private location: Location
+  ) {}
 
   /**
    * Component on init
@@ -61,7 +63,7 @@ export class Disqus implements OnInit {
     this.window.disqus_config = this.getConfig();
     let container = this.getScriptContainer();
     let script = this.buildScriptTag(`//${this.shortname}.disqus.com/embed.js`);
-    getDOM().insertBefore(container.lastChild, script);
+    _.getDOM().insertBefore(container.lastChild, script);
   }
 
   /**
@@ -91,11 +93,11 @@ export class Disqus implements OnInit {
    * @return {HTMLElement}
    */
   private buildScriptTag(src: string): HTMLElement {
-    let script = getDOM().createElement('script');
-    getDOM().setAttribute(script, 'src', src);
-    getDOM().setAttribute(script, 'async', 'true');
-    getDOM().setAttribute(script, 'type', 'text/javascript');
-    getDOM().setAttribute(script, 'data-timestamp', new Date().getTime().toString());
+    let script = _.getDOM().createElement('script');
+    _.getDOM().setAttribute(script, 'src', src);
+    _.getDOM().setAttribute(script, 'async', 'true');
+    _.getDOM().setAttribute(script, 'type', 'text/javascript');
+    _.getDOM().setAttribute(script, 'data-timestamp', new Date().getTime().toString());
     return script;
   }
 }

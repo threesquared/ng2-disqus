@@ -1,3 +1,1 @@
-import { Disqus } from './src/disqus';
-
-export { Disqus };
+export { Ng2DisqusModule } from './src/ng2-disqus.module';
